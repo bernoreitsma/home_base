@@ -10,6 +10,15 @@ Set up local environment variables:
 ```bash
 cp example.env .env
 ```
+Create venv:
+```bash
+python -m venv venv
+```
+Activate venv:
+```bash
+source venv/bin/activate
+```
+
 Go into the project folder
 ```
 cd home_base
