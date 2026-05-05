@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+</head>
+<body>
+    <h1>Task List</h1>
+    <ul id="task-list">
+        {% for task in object_list %}
+            <li draggable="true" data-rank="{{ task.rank }}">
+                <strong>{{ task.rank }}.</strong> {{ task.description }}
+                {% if task.category == task.TaskCategory.IMPORTANT %}
+                    <span class="task-icon" title="Important" style="float:right; font-size:1.2rem;">💼</span>
+                {% elif task.category == task.TaskCategory.FUN %}
+                    <span class="task-icon" title="Fun" style="float:right; font-size:1.2rem;">🙂</span>
+                {% elif task.category == task.TaskCategory.SMALL %}
+                    <span class="task-icon" title="Small" style="float:right; font-size:1.2rem;">🤏</span>
+                {% endif %}
+                <span style="color: gray;">({{ task.status }})</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        const taskList = document.getElementById('task-list');
+        let draggedItem = null;
+
+        taskList.addEventListener('dragstart', (e) => {
+            draggedItem = e.target;
+            e.target.classList.add('dragging');
+        });
+
+        taskList.addEventListener('dragend', (e) => {
+            e.target.classList.remove('dragging');
+            draggedItem = null;
+        });
+
+        taskList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(taskList, e.clientY);
+            if (afterElement == null) {
+                taskList.appendChild(draggedItem);
+            } else {
+                taskList.insertBefore(draggedItem, afterElement);
+            }
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    </script>
+</body>
+</html>
