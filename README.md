@@ -18,6 +18,12 @@ Activate venv:
 ```bash
 source venv/bin/activate
 ```
+Install requirements 
+(Make sure your venv is activated! Tip: Check if `which pip` and you should see the
+path pointing to a `pip` executable within your venv path.)
+```
+pip install -r requirements.txt
+```
 
 Go into the project folder
 ```
