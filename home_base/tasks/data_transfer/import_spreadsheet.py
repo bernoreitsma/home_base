@@ -62,7 +62,6 @@ class CSVImporter:
             "fijn": "fun",
             "klein": "small"
         }
-        print(category)
 
         return Task(
             rank=rank,
