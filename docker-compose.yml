@@ -1,0 +1,35 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    volumes:
+      - ./home_base:/app/home_base
+    entrypoint:
+      - python
+      - manage.py
+      - runserver
+      - 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=home_base
+      - PG_USER=postgres
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "home_base"]
+      interval: 10s
+      timeout: 60s
+      retries: 10
+      start_period: 80s
+
+
+

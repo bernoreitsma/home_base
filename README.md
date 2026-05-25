@@ -24,31 +24,68 @@ path pointing to a `pip` executable within your venv path.)
 ```
 pip install -r requirements.txt
 ```
+Run dev server:
+```
+docker compose up -d
+```
+Run the migrations:
+```
+docker compose exec api python manage.py migrate
+```
 
-Go into the project folder
+Then, open http://localhost:8000/admin for the admin interface.
+If you wish to see the container logs, run
 ```
-cd home_base
+docker compose logs
+```
+For further usage, see https://docs.docker.com/compose/.
+
+# Contribution guide
+## Model migrations
+If you change or add models, add migrations like so:
+To generate code for migrations in Django, run
+```
+python manage.py makemigrations
+```
+To migrate the dev db, run
+```
+docker compose exec api python manage.py migrate
 ```
 
-Run migrations (currenty we just track the database in sqlite3)
-```bash
-python manage.py migrate
+## Adding or upgrading dependencies
+The dependency management system should automatically handle non-breaking 
+dependency upgrades.
+
+Add new dependencies in `requirements.in`. Choose a range in which the dependency is
+expected to stay compatible. 
+
+To upgrade dependencies, update the range beyond the compatible range set in 
+`requirements.in`.
+
+Then run
 ```
-Create admin account
-```bash
-python manage.py createsuperuser
+uv pip compile --generate-hashes requirements.in > requirements.txt
 ```
-Run the server locally
-```bash
-python manage.py runserver
+Then install them into your local venv:
 ```
-Then, open http://localhost:8000/admin for the admin interface; 
+pip install -r requirements.txt
+```
+and rebuild and run your container:
+```
+docker compose up -d --build
+```
+
 
 # Tasks
 Open http://localhost:8000/tasks for the local task list page.
 
 ## Importing data
-Export the Nieuwe Lijst Der Taken as csv. Run
+Export the Nieuwe Lijst Der Taken as csv. 
+Place them in your `home_base` subdirectory, i.e. `home_base/home_base`. Unless
+you want to copy this file into your container manually, this is necessary to have
+the csv file visible for your docker container.
+
+Run
 ```
-python manage.py import_csv <path_to_csv>
+docker compose exec api python manage.py import_csv <path_to_csv>
 ```
