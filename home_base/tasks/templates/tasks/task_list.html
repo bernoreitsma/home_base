@@ -21,6 +21,8 @@
                         <span class="task-icon" title="Fun" style="float:right; font-size:1.2rem;">🙂</span>
                     {% elif task.category == task.TaskCategory.SMALL %}
                         <span class="task-icon" title="Small" style="float:right; font-size:1.2rem;">🤏</span>
+                    {% elif task.category == task.TaskCategory.URGENT %}
+                        <span class="task-icon" title="Urgent" style="float:right; font-size:1.2rem;">🚨</span>                    
                     {% endif %}
                     <span style="color: gray;">({{ task.status }})</span>
                 </li>

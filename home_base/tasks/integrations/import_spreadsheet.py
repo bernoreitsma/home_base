@@ -30,16 +30,18 @@ class CSVImporter:
 
         This function assumes the list of tasks start underneath "TAKEN".
 
-        This function assumes that the first whiteline afterwards indicates the
-        'stop' of the task list.
+        This function assumes that the first field after, whose row does not contain
+        a category but does contain a task description.
 
         Not idea longterm, but if the format is not changed, this function won't break.
         """
         first_relevant_row_index = raw_tasks.index[raw_tasks[0]=='TAKEN'].start + 1
         raw_tasks_cleaned_above = raw_tasks.iloc[first_relevant_row_index:].reset_index(drop=True)
 
-        last_relevant_row_index = raw_tasks_cleaned_above.index[raw_tasks_cleaned_above[0].isna()].start
-        raw_tasks_cleaned_below = raw_tasks_cleaned_above.iloc[:last_relevant_row_index].reset_index(drop=True)
+        last_relevant_row_index = raw_tasks_cleaned_above.index[~raw_tasks_cleaned_above[0].isna() & raw_tasks_cleaned_above[1].isna()].min()
+        raw_tasks_cleaned_below = raw_tasks_cleaned_above.iloc[:last_relevant_row_index]
+
+        raw_tasks_cleaned_below = raw_tasks_cleaned_below[~raw_tasks_cleaned_below[0].isnull()].reset_index(drop=True)
 
         return raw_tasks_cleaned_below
 
@@ -60,7 +62,8 @@ class CSVImporter:
         category_translation_map = {
             "belangrijk": "important",
             "fijn": "fun",
-            "klein": "small"
+            "klein": "small",
+            "urgent": "urgent"
         }
 
         return Task(

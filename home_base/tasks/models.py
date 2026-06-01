@@ -11,6 +11,7 @@ class Task(models.Model):
         IMPORTANT = "IMPORTANT"
         FUN = "FUN"
         SMALL = "SMALL"
+        URGENT = "URGENT"
 
     rank = models.IntegerField()
     description = models.CharField(max_length=1000)

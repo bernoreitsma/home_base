@@ -1,7 +1,7 @@
 import pathlib
 from django.core.management.base import BaseCommand, CommandError
 
-from tasks.data_transfer.import_spreadsheet import CSVImporter
+from tasks.integrations.import_spreadsheet import CSVImporter
 
 class Command(BaseCommand):
     help = "Imports old spreadsheet as csv file"
