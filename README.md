@@ -75,11 +75,11 @@ and rebuild and run your container:
 docker compose up -d --build
 ```
 
-
-# Tasks
+# The apps
+## Tasks
 Open http://localhost:8000/tasks for the local task list page.
 
-## Importing data
+### Importing data
 Export the Nieuwe Lijst Der Taken as csv. 
 Place them in your `home_base` subdirectory, i.e. `home_base/home_base`. Unless
 you want to copy this file into your container manually, this is necessary to have
@@ -89,3 +89,4 @@ Run
 ```
 docker compose exec api python manage.py import_csv <path_to_csv>
 ```
+Here, `<path_to_csv>` is the path relative to your *inner* `home_base` folder.
