@@ -4,6 +4,7 @@ from rest_framework.views import APIView, Request
 from rest_framework.response import Response
 
 from tasks.logic.task import TaskLogic
+from tasks.models import Task
 from tasks.pydantic_basemodels.update_order import UpdateOrderBody
 
 class UpdateOrder(APIView):
@@ -15,6 +16,9 @@ class UpdateOrder(APIView):
         except ValidationError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         
+        if Task.objects.count() != len(request_body.new_order):
+            return Response("Proposed order has unexpected length.", status=status.HTTP_400_BAD_REQUEST)
+
         tasks_updated = TaskLogic.update_order_to(request_body.new_order)
 
         return Response(f"{tasks_updated} task ranks updated.", status.HTTP_200_OK)
