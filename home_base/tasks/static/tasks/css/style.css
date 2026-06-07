@@ -42,3 +42,7 @@ li.dragging {
 .task-list .buttons .save {
     color: green;
 }
+
+input[type=submit] {
+    color: green;
+}
