@@ -1,3 +1,4 @@
+const csrfToken = document.getElementById("csrf").textContent;
 const taskList = document.getElementById('task-list');
 const taskItems = Array.from(Array(taskList.childElementCount).keys());
 let draggedItem = null;
@@ -44,15 +45,25 @@ function fetchTaskOrderFromTaskList() {
 }
 
 function setTaskListOrderAfterUpdate() {
-    for (var i = 0; i < taskList.children.length; i++) {
+    for (var i = 0; i < taskList.children.length - 1; i++) {
         taskList.children[i].setAttribute("data-rank", i);
-        taskList.children[i].children[0].textContent = `${i}.`;
+        taskList.children[i].children[1].textContent = `${i}.`;
     }
 }
 
-function setNewTaskOrder() {
+function decrementTaskListRankAfterRemoval(taskRank) {
+    for (var i = 0; i < taskList.children.length - 1; i++) {
+        const elementRank = parseInt(taskList.children[i].getAttribute("data-rank"));
+        if (elementRank > taskRank) {
+            taskList.children[i].setAttribute("data-rank", elementRank - 1);
+            taskList.children[i].children[1].textContent = `${elementRank - 1}`;
+        }
+    }
+}
+
+async function setNewTaskOrder() {
     const taskOrder = fetchTaskOrderFromTaskList();
-    fetch(
+    response = await fetch(
         "/tasks/api/update-order", {
         method: "POST",
         body: JSON.stringify({
@@ -60,16 +71,47 @@ function setNewTaskOrder() {
         }),
         headers: {
             "Content-Type": "application/json; charset=UTF-8",
+            'X-CSRFTOKEN': csrfToken
         }
-    }).then(
-        setTaskListOrderAfterUpdate
-    ).catch(
-        (response) => {
-            alert("Update failed with error", response.json())
-        }
-    );
+    });
+    if (!response.ok) {
+        alert("Error creating task: " + response.statusText);
+        return;
+    }
     setTaskListOrderAfterUpdate();
 };
+
+async function deleteTask(clickedButton) {
+    if (!confirm("Are you sure you want to delete this task?")) {
+        return;
+    }
+
+    const taskElement = clickedButton.parentNode;
+
+    const taskRank = parseInt(taskElement.getAttribute("data-rank"));
+
+    payload = {task_rank: taskRank};
+
+    response = await fetch("/tasks/api/task", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRFTOKEN': csrfToken
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        alert("Error deleting task: " + response.statusText);
+    }
+    removeTaskFromList(taskElement);
+    decrementTaskListRankAfterRemoval(taskRank);
+    
+}
+
+function removeTaskFromList(taskElement) {
+    taskList.removeChild(taskElement);
+}
 
 document.getElementById("new-task-form")
     .addEventListener('submit', async (e) => {
@@ -82,7 +124,8 @@ document.getElementById("new-task-form")
         response = await fetch("/tasks/api/task", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'X-CSRFTOKEN': csrfToken
             },
             body: JSON.stringify(payload)
         });
