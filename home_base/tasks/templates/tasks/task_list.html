@@ -1,53 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <p id="csrf" hidden>{{ csrf_token }}</p>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task List</title>
+    <link rel="stylesheet" href="{% static 'tasks/dist/assets/index.css' %}">
 </head>
 <body>
-    <h1>Task List</h1>
-    <div class = "task-list">
-        <div class="buttons">
-            <button class="button save" type="button" onclick="setNewTaskOrder()"> Save Order</button>
-        </div>
-        <ul id="task-list">
-            {% for task in object_list %}
-                <li draggable="true" data-rank="{{ task.rank }}">
-                    <button class="btn" onclick="deleteTask(this)"><i class="fa fa-trash"></i></button>
-                    <strong>{{ task.rank }}.</strong> {{ task.description }}
-                    {% if task.category == task.TaskCategory.IMPORTANT %}
-                        <span class="task-icon" title="Important" style="float:right; font-size:1.2rem;">💼</span>
-                    {% elif task.category == task.TaskCategory.FUN %}
-                        <span class="task-icon" title="Fun" style="float:right; font-size:1.2rem;">🙂</span>
-                    {% elif task.category == task.TaskCategory.SMALL %}
-                        <span class="task-icon" title="Small" style="float:right; font-size:1.2rem;">🤏</span>
-                    {% elif task.category == task.TaskCategory.URGENT %}
-                        <span class="task-icon" title="Urgent" style="float:right; font-size:1.2rem;">🚨</span>                    
-                    {% endif %}
-                    <span style="color: gray;">({{ task.status }})</span>
-                </li>
-            {% endfor %}
-            <li draggable="false" id="new-task-form">
-                <form method="post" action="/tasks/task">
-                <button class="btn" disabled><i class="fa fa-trash"></i></button>
-                <strong>{{ object_list|length }}. </strong><input name="description" type="text">
-                        <select name="category">
-                            <option value="Important">💼 Important</option>
-                            <option value="Fun">🙂 Fun</option>
-                            <option value="Small">🤏 Small</option>
-                            <option value="Urgent">🚨 Urgent</option>
-                        </select>
-                        <input type="submit" value="Save task">
-                </form>
-            </li>
-        </ul>
-    </div>
-
-    <script src="{% static 'tasks/js/task-list.js' %}"></script>
+    <div id="root"></div>
+    <script type="module" src="{% static 'tasks/dist/assets/index.js' %}"></script>
 </body>
 </html>

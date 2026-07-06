@@ -1,8 +1,8 @@
-from django.views.generic.list import ListView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import TemplateView
 
-from tasks.models import Task
 
-# Create your views here.
-class TaskListView(ListView):
-    model = Task
-    queryset = Task.objects.all().order_by("rank")
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class TaskListView(TemplateView):
+    template_name = "tasks/task_list.html"

@@ -75,6 +75,26 @@ and rebuild and run your container:
 docker compose up -d --build
 ```
 
+# Frontend
+The `tasks` page is a React app (TypeScript) bundled with Vite. The Node
+tooling lives in `frontend/`, and Vite builds the bundle straight into `/static`, 
+where Django's `runserver` serves it.
+
+Install the frontend dependencies (requires Node.js):
+```
+cd frontend
+npm install
+```
+Build the bundle (one-off):
+```
+npm run build
+```
+While developing the frontend, rebuild automatically on every change:
+```
+npm run dev
+```
+Then reload http://localhost:8000/tasks.
+
 # The apps
 ## Tasks
 Open http://localhost:8000/tasks for the local task list page.

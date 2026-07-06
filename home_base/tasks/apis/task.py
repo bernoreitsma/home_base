@@ -8,15 +8,18 @@ from rest_framework.views import APIView, Request
 from tasks.logic.task import TaskLogic
 from tasks.models import Task
 from tasks.pydantic_basemodels.task import CreateTaskBody, DeleteTaskBody
+from tasks.serializers.task import TaskSerializer
 
-class TaskSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Task
-        fields = '__all__'
+
+class TaskListAPIView(APIView):
+
+    def get(self, request: Request):
+        tasks = Task.objects.all().order_by("rank")
+        return Response(TaskSerializer(tasks, many=True).data, status=status.HTTP_200_OK)
 
 
 class TaskAPIView(APIView):
-    
+
     def post(self, request: Request):
         request_data = request.data
         

@@ -4,6 +4,7 @@ services:
     env_file: .env
     volumes:
       - ./home_base:/app
+      - ./static:/app/static
     entrypoint:
       - python
       - manage.py
