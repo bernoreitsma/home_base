@@ -5,4 +5,4 @@ from tasks.models import Task
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ["category", "description"]
+        fields = "__all__"
