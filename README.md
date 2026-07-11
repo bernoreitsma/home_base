@@ -33,6 +33,14 @@ path pointing to a `pip` executable within your venv path.)
 pip install -r requirements.txt
 ```
 
+Build the frontend:
+```
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
 Run dev server:
 
 ```
@@ -45,6 +53,11 @@ Run the migrations:
 docker compose exec api python manage.py migrate
 ```
 
+Then create an admin user:
+```
+docker compose exec api python manage.py createsuperuser
+```
+
 Then, open http://localhost:8000/admin for the admin interface.
 If you wish to see the container logs, run
 
@@ -52,37 +65,20 @@ If you wish to see the container logs, run
 docker compose logs
 ```
 
-For further usage, see https://docs.docker.com/compose/.
+### Importing data
 
-## Production deploy (homeserver)
+Export the Nieuwe Lijst Der Taken (or the example in git) as csv.
+Place them in your `home_base` subdirectory, i.e. `home_base/home_base`. Unless
+you want to copy this file into your container manually, this is necessary to have
+the csv file visible for your docker container.
 
-The `deploy/` folder holds a self-contained production stack: the Django app
-served by gunicorn with `DEBUG` off, static files served by WhiteNoise, and
-Postgres on a named volume. The image builds the React bundle itself, so no
-manual `npm run build` is needed on the server.
-
-Copy the production env template and fill in real secrets (at minimum
-`DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, and `POSTGRES_PASSWORD`):
+Run
 
 ```
-cp deploy/.env.example deploy/.env
+docker compose exec api python manage.py import_csv google_export_example.csv
 ```
 
-Then build and start it (from the repo root):
-
-```
-docker compose -f deploy/docker-compose.yml up -d --build
-```
-
-The entrypoint runs migrations and `collectstatic` on every start, so a new
-deploy is just:
-
-```
-docker compose -f deploy/docker-compose.yml up -d --build
-```
-
-The app listens on port 8000. `deploy/.env` is git-ignored — keep the real
-secrets off version control.
+Then load http://localhost:8000/tasks or http://localhost:8000/tasks/dashboard
 
 # Contribution guide
 
@@ -141,50 +137,32 @@ and rebuild and run your container:
 docker compose up -d --build
 ```
 
-# Frontend
+## Production deploy (homeserver)
 
-The `tasks` page is a React app (TypeScript) bundled with Vite. The Node
-tooling lives in `frontend/`, and Vite builds the bundle straight into `/static`,
-where Django's `runserver` serves it.
+The `deploy/` folder holds a self-contained production stack: the Django app
+served by gunicorn with `DEBUG` off, static files served by WhiteNoise, and
+Postgres on a named volume. The image builds the React bundle itself, so no
+manual `npm run build` is needed on the server.
 
-Install the frontend dependencies (requires Node.js):
-
-```
-cd frontend
-npm install
-```
-
-Build the bundle (one-off):
+Copy the production env template and fill in real secrets (at minimum
+`DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, and `POSTGRES_PASSWORD`):
 
 ```
-npm run build
+cp deploy/.env.example deploy/.env
 ```
 
-While developing the frontend, rebuild automatically on every change:
+Then build and start it (from the repo root):
 
 ```
-npm run dev
+docker compose -f deploy/docker-compose.yml up -d --build
 ```
 
-Then reload http://localhost:8000/tasks.
-
-# The apps
-
-## Tasks
-
-Open http://localhost:8000/tasks for the local task list page. Visit
-http://localhost:8000/tasks/dashboard for the dashboard.
-
-### Importing data
-
-Export the Nieuwe Lijst Der Taken (or the example in git) as csv.
-Place them in your `home_base` subdirectory, i.e. `home_base/home_base`. Unless
-you want to copy this file into your container manually, this is necessary to have
-the csv file visible for your docker container.
-
-Run
+The entrypoint runs migrations and `collectstatic` on every start, so a new
+deploy is just:
 
 ```
-docker compose exec api python manage.py import_csv google_export_example.csv
+docker compose -f deploy/docker-compose.yml up -d --build
 ```
 
+The app listens on port 8000. `deploy/.env` is git-ignored — keep the real
+secrets off version control.
