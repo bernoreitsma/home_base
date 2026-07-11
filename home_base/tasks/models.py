@@ -1,7 +1,7 @@
 from django.db import models
 
-class Task(models.Model):
 
+class Task(models.Model):
     class TaskStatus(models.TextChoices):
         TODO = "TODO"
         DONE = "DONE"
@@ -23,8 +23,6 @@ class Task(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["rank"],
-                deferrable=models.Deferrable.DEFERRED,
-                name="unique_rank_deferrable"
+                fields=["rank"], deferrable=models.Deferrable.DEFERRED, name="unique_rank_deferrable"
             )
         ]

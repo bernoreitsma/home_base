@@ -4,7 +4,6 @@ from tasks.models import Task
 
 
 class TaskLogic:
-
     @staticmethod
     @transaction.atomic
     def update_order_to(task_ids: list[int]) -> int:
@@ -15,9 +14,7 @@ class TaskLogic:
         for task in tasks_to_update:
             task.rank = id_to_new_rank[task.id]
 
-        return Task.objects.bulk_update(
-            tasks_to_update, ["rank"]
-        )
+        return Task.objects.bulk_update(tasks_to_update, ["rank"])
 
     @staticmethod
     def update_task(
@@ -51,6 +48,4 @@ class TaskLogic:
         for task in tasks_to_decrement:
             task.rank -= 1
 
-        return Task.objects.bulk_update(
-            tasks_to_decrement, ["rank"]
-        )
+        return Task.objects.bulk_update(tasks_to_decrement, ["rank"])

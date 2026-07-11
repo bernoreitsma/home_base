@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView, Request
 
-
 from tasks.logic.task import TaskLogic
 from tasks.models import Task
 from tasks.pydantic_basemodels.task import CreateTaskBody, DeleteTaskBody, UpdateTaskBody
@@ -11,27 +10,25 @@ from tasks.serializers.task import TaskSerializer
 
 
 class TaskListAPIView(APIView):
-
     def get(self, request: Request):
         tasks = Task.objects.all().order_by("rank")
         return Response(TaskSerializer(tasks, many=True).data, status=status.HTTP_200_OK)
 
 
 class TaskAPIView(APIView):
-
     def post(self, request: Request):
         request_data = request.data
-        
+
         try:
             request_body = CreateTaskBody(**request_data)
         except ValidationError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-        
+
         task = Task(
-            rank = Task.objects.count(),
-            description = request_body.description,
-            status = Task.TaskStatus.TODO,
-            category = request_body.category
+            rank=Task.objects.count(),
+            description=request_body.description,
+            status=Task.TaskStatus.TODO,
+            category=request_body.category,
         )
 
         task.save()
@@ -67,7 +64,7 @@ class TaskAPIView(APIView):
             request_body = DeleteTaskBody(**request_data)
         except ValidationError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             tasks_updated = TaskLogic.delete_task_by_id(request_body.task_id)
         except Task.DoesNotExist:

@@ -1,0 +1,38 @@
+[tool.ruff]
+# PEP 8 compliant, but relax the line width from 79 to 120.
+line-length = 120
+target-version = "py312"
+# Django project source lives under home_base/.
+src = ["home_base"]
+extend-exclude = [
+    "migrations",
+    "settings.py",
+    "venv",
+    "frontend",
+    "staticfiles",
+]
+
+[tool.ruff.lint]
+# E/W: pycodestyle (PEP 8), F: pyflakes, I: isort.
+select = ["E", "W", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["home_base", "tasks"]
+
+[tool.ruff.format]
+# Standard ruff formatter (Black-style); width is inherited from line-length.
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+files = ["home_base"]
+exclude = [
+    "migrations",
+    "settings.py",
+    "venv",
+    "staticfiles",
+]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true

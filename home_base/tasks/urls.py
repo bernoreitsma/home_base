@@ -13,5 +13,5 @@ urlpatterns = [
     path("api/update-order", UpdateOrder.as_view()),
     path("api/tasks", TaskListAPIView.as_view()),
     path("api/dashboard", TaskDashboardView.as_view()),
-    path("api/task", TaskAPIView.as_view())
+    path("api/task", TaskAPIView.as_view()),
 ]

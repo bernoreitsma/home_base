@@ -7,13 +7,11 @@ from tasks.serializers.task import TaskSerializer
 
 
 class TaskDashboardView(APIView):
-
     def get(self, request: Request):
         tasks_base_queryset = Task.objects.all().exclude(status=Task.TaskStatus.DONE).order_by("rank")
 
         dashboard_tasks = [
-            tasks_base_queryset.filter(category=task_category).first()
-            for task_category in Task.TaskCategory
+            tasks_base_queryset.filter(category=task_category).first() for task_category in Task.TaskCategory.names
         ]
 
         dashboard_tasks = list(filter(None, dashboard_tasks))
