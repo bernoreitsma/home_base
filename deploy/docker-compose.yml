@@ -1,0 +1,40 @@
+# Production stack for the homeserver.
+#
+# Runs the Django app under gunicorn with DEBUG off (set via .env) and Postgres
+# on a named volume. Run from the repo root:
+#
+#   cp deploy/.env.example deploy/.env   # then edit the secrets
+#   docker compose -f deploy/docker-compose.yml up -d --build
+#
+# The build context is the repo root (..) so the image can pull in the backend,
+# the frontend sources, and requirements.txt.
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: home_base:latest
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 60s
+      retries: 10
+      start_period: 80s
+
+volumes:
+  postgres_data:

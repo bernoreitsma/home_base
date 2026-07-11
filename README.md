@@ -54,6 +54,36 @@ docker compose logs
 
 For further usage, see https://docs.docker.com/compose/.
 
+## Production deploy (homeserver)
+
+The `deploy/` folder holds a self-contained production stack: the Django app
+served by gunicorn with `DEBUG` off, static files served by WhiteNoise, and
+Postgres on a named volume. The image builds the React bundle itself, so no
+manual `npm run build` is needed on the server.
+
+Copy the production env template and fill in real secrets (at minimum
+`DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, and `POSTGRES_PASSWORD`):
+
+```
+cp deploy/.env.example deploy/.env
+```
+
+Then build and start it (from the repo root):
+
+```
+docker compose -f deploy/docker-compose.yml up -d --build
+```
+
+The entrypoint runs migrations and `collectstatic` on every start, so a new
+deploy is just:
+
+```
+docker compose -f deploy/docker-compose.yml up -d --build
+```
+
+The app listens on port 8000. `deploy/.env` is git-ignored — keep the real
+secrets off version control.
+
 # Contribution guide
 
 ## Git hooks
