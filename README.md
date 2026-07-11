@@ -176,7 +176,7 @@ Open http://localhost:8000/tasks for the local task list page.
 
 ### Importing data
 
-Export the Nieuwe Lijst Der Taken as csv.
+Export the Nieuwe Lijst Der Taken (or the example in git) as csv.
 Place them in your `home_base` subdirectory, i.e. `home_base/home_base`. Unless
 you want to copy this file into your container manually, this is necessary to have
 the csv file visible for your docker container.
