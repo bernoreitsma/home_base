@@ -1,0 +1,27 @@
+# Django migrations are auto-generated, so skip them across all hooks.
+# settings.py is also excluded due to the many standard things in there.
+exclude: '(^|/)migrations/|(^|/)settings\.py$'
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        args: [--config-file=pyproject.toml]
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint (frontend)
+        entry: bash -c 'cd frontend && npx eslint .'
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: false
+        require_serial: true

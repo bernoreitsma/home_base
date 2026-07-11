@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { TaskCategory } from "../types";
+import type { Task, TaskCategory } from "../types";
 import { CATEGORIES, updateTask } from "../api";
 import { useTasks } from "../hooks/useTasks";
 
@@ -19,15 +19,15 @@ export function EditTaskPage() {
   const [category, setCategory] = useState<TaskCategory | "">("");
   const [marked, setMarked] = useState(false);
 
-  useEffect(() => {
-    if (task) {
-      setDescription(task.description);
-      setNotes(task.notes ?? "");
-      setStatus(task.status);
-      setCategory(task.category ?? "");
-      setMarked(task.marked);
-    }
-  }, [task]);
+  const [prefilledFrom, setPrefilledFrom] = useState<Task | undefined>(undefined);
+  if (task && task !== prefilledFrom) {
+    setPrefilledFrom(task);
+    setDescription(task.description);
+    setNotes(task.notes ?? "");
+    setStatus(task.status);
+    setCategory(task.category ?? "");
+    setMarked(task.marked);
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

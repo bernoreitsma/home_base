@@ -1,4 +1,4 @@
-import { useEffect, useState, type DragEvent } from "react";
+import { useState, type DragEvent } from "react";
 import type { Task } from "../types";
 import { deleteTask, updateOrder } from "../api";
 import { TaskItem } from "./TaskItem";
@@ -26,14 +26,14 @@ function getDragAfterElement(container: HTMLElement, y: number): Element | null 
 }
 
 export function TaskList({ tasks, onChanged }: TaskListProps) {
-  // Local working copy that drag-reorders; re-synced whenever the canonical
-  // list from the server changes (e.g. after a create/delete/save).
   const [items, setItems] = useState<Task[]>(tasks);
+  const [syncedTasks, setSyncedTasks] = useState<Task[]>(tasks);
   const [draggedRank, setDraggedRank] = useState<number | null>(null);
 
-  useEffect(() => {
+  if (tasks !== syncedTasks) {
+    setSyncedTasks(tasks);
     setItems(tasks);
-  }, [tasks]);
+  }
 
   const handleDragOver = (e: DragEvent<HTMLUListElement>) => {
     e.preventDefault();
