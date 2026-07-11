@@ -1,2 +1,0 @@
-- The import CSV now requires manual cleaning. Make a cleaner that picks out the right rows from the CSV.
-- Create an interface that interacts can drag/drop the tasks.
