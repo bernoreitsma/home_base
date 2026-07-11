@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Task, TaskCategory } from "../types";
+import type { TaskCategory } from "../types";
 import { CATEGORIES, updateTask } from "../api";
-
-interface EditTaskPageProps {
-  tasks: Task[];
-  loaded: boolean;
-  onSaved: () => void;
-}
+import { useTasks } from "../hooks/useTasks";
 
 const STATUS_OPTIONS = ["TODO", "IN_PROGRESS", "DONE"];
 
-export function EditTaskPage({ tasks, loaded, onSaved }: EditTaskPageProps) {
+export function EditTaskPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { tasks, loaded, reload } = useTasks();
   const task = tasks.find((t) => t.id === Number(id));
 
   const [description, setDescription] = useState("");
@@ -45,7 +41,7 @@ export function EditTaskPage({ tasks, loaded, onSaved }: EditTaskPageProps) {
         category: category === "" ? null : category,
         marked,
       });
-      onSaved();
+      reload();
       navigate("/tasks");
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));

@@ -36,6 +36,14 @@ export async function getTasks(): Promise<Task[]> {
   return response.json();
 }
 
+export async function getDashboardTasks(): Promise<Task[]> {
+  const response = await fetch("/tasks/api/dashboard");
+  if (!response.ok) {
+    throw new Error(`Error loading dashboard: ${response.statusText}`);
+  }
+  return response.json();
+}
+
 export async function createTask(payload: NewTask): Promise<Task> {
   const response = await request("/tasks/api/task", {
     method: "POST",
