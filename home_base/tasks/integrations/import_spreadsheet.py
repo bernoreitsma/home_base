@@ -78,7 +78,7 @@ class CSVImporter:
     def _unpack_notes(notes) -> str | None:
         if isinstance(notes, float) and math.isnan(notes):
             notes = None
-        return str(notes)
+        return notes or None
 
 
 

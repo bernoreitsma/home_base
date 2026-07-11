@@ -1,48 +1,222 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f9f9f9;
 }
 h1 {
-    text-align: center;
-    color: #333;
+  text-align: center;
+  color: #333;
 }
 li {
-    padding: 15px;
-    margin: 0;
-    border-bottom: 1px solid #ddd;
-    background-color: #fefefe;
-    cursor: grab;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  margin: 0;
+  border-bottom: 1px solid #ddd;
+  background-color: #fefefe;
+  cursor: grab;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.task-notes {
+  margin-top: 10px;
+  margin-left: 2.4em;
+  padding: 8px 10px;
+  background-color: #f1f1f1;
+  border-radius: 6px;
+  color: #333;
+  white-space: pre-wrap;
+  cursor: default;
+}
+
+#new-task-form form {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 li:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 li.dragging {
-    opacity: 0.5;
-    background-color: #e0e0e0;
+  opacity: 0.5;
+  background-color: #e0e0e0;
 }
 
 .task-list ul {
-    list-style-type: none;
-    padding: 0;
-    max-width: 1000px;
-    margin: 0 auto;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  list-style-type: none;
+  padding: 0;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  margin-right: 10px;
 }
 
 .task-list .buttons {
-    position: relative;
-    left: 50%;
-    margin-left: -500px;
+  position: relative;
+  left: 50%;
+  margin-left: -500px;
 }
 
 .task-list .buttons .save {
-    color: green;
+  color: green;
+  margin-right: 10px;
 }
 
-input[type=submit] {
-    color: green;
+input {
+  margin-right: 10px;
+}
+
+select {
+  margin-right: 10px;
+}
+
+.status-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.status-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-right: 0;
+  padding: 6px 30px 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    box-shadow 150ms ease, transform 100ms ease;
+}
+
+.status-select select:hover {
+  filter: brightness(0.96);
+}
+
+.status-select select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.status-select select:active {
+  transform: scale(0.98);
+}
+
+.status-select__chevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: currentColor;
+  opacity: 0.7;
+}
+
+.status-select--todo select {
+  background-color: #eef1f5;
+  border-color: #d7dce3;
+  color: #4b5563;
+}
+
+.status-select--in_progress select {
+  background-color: #fff4d6;
+  border-color: #f3d98b;
+  color: #926a05;
+}
+
+.status-select--done select {
+  background-color: #dcf7e3;
+  border-color: #a6e6b8;
+  color: #1c7a3c;
+}
+
+input[type="submit"] {
+  color: green;
+}
+
+.edit-task-page {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 30px 30px;
+}
+
+.edit-task-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-task-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-task-page input[type="text"],
+.edit-task-page select,
+.edit-task-page textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 0;
+}
+
+.edit-task-page textarea {
+  resize: vertical;
+}
+
+.edit-task-page .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-task-page .checkbox-label input {
+  margin-right: 0;
+}
+
+.edit-task-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.firework-particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1000;
+  animation: firework-burst 700ms ease-out forwards;
+}
+
+@keyframes firework-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.3);
+    opacity: 0;
+  }
 }

@@ -1,29 +1,23 @@
 import { useState, type FormEvent } from "react";
-import { createTask } from "../api";
+import { CATEGORIES, createTask } from "../api";
+import type { TaskCategory } from "../types";
+import { Trash2 } from "lucide-react";
 
 interface NewTaskFormProps {
   nextRank: number;
   onCreated: () => void;
 }
 
-// Title-case values match the original <select>; the backend upper-cases them.
-const CATEGORY_OPTIONS = [
-  { value: "Important", label: "💼 Important" },
-  { value: "Fun", label: "🙂 Fun" },
-  { value: "Small", label: "🤏 Small" },
-  { value: "Urgent", label: "🚨 Urgent" },
-];
-
 export function NewTaskForm({ nextRank, onCreated }: NewTaskFormProps) {
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(CATEGORY_OPTIONS[0].value);
+  const [category, setCategory] = useState<TaskCategory>(CATEGORIES[0].value);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       await createTask({ description, category });
       setDescription("");
-      setCategory(CATEGORY_OPTIONS[0].value);
+      setCategory(CATEGORIES[0].value);
       onCreated();
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
@@ -33,10 +27,10 @@ export function NewTaskForm({ nextRank, onCreated }: NewTaskFormProps) {
   return (
     <li draggable={false} id="new-task-form">
       <form onSubmit={handleSubmit}>
-        <button className="btn" disabled>
-          🗑
+        <button className="btn" disabled title="Delete">
+          <Trash2 />
         </button>
-        <strong>{nextRank}. </strong>
+        <strong style={{ marginRight: "0.4em" }}>{nextRank}. </strong>
         <input
           name="description"
           type="text"
@@ -46,11 +40,11 @@ export function NewTaskForm({ nextRank, onCreated }: NewTaskFormProps) {
         <select
           name="category"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) => setCategory(e.target.value as TaskCategory)}
         >
-          {CATEGORY_OPTIONS.map((opt) => (
+          {CATEGORIES.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              {opt.label}
+              {opt.icon} {opt.title}
             </option>
           ))}
         </select>

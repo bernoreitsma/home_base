@@ -6,26 +6,48 @@ from tasks.models import Task
 class TaskLogic:
 
     @staticmethod
-    def update_order_to(new_order: list[int]) -> int:
-        old_to_new_order = dict(zip(new_order, range(len(new_order))))
+    @transaction.atomic
+    def update_order_to(task_ids: list[int]) -> int:
+        id_to_new_rank = {task_id: rank for rank, task_id in enumerate(task_ids)}
 
-        old_to_new_updates = {old: new for old, new in old_to_new_order.items() if old != new}
-
-        tasks_to_update = Task.objects.filter(rank__in=old_to_new_updates).order_by("rank")
+        tasks_to_update = list(Task.objects.filter(id__in=id_to_new_rank))
 
         for task in tasks_to_update:
-            task.rank = old_to_new_updates[task.rank]
-        
+            task.rank = id_to_new_rank[task.id]
+
         return Task.objects.bulk_update(
             tasks_to_update, ["rank"]
         )
 
     @staticmethod
-    @transaction.atomic
-    def delete_task_by_rank(task_rank: int) -> int:
-        Task.objects.filter(rank=task_rank).delete()
+    def update_task(
+        task_id: int,
+        description: str,
+        notes: str | None,
+        status: str,
+        category: str | None,
+        marked: bool,
+    ) -> Task:
+        task = Task.objects.get(id=task_id)  # raises Task.DoesNotExist if missing
 
-        tasks_to_decrement = Task.objects.filter(rank__gte=task_rank)
+        task.description = description
+        task.notes = notes
+        task.status = status
+        task.category = category
+        task.marked = marked
+        task.save()
+
+        return task
+
+    @staticmethod
+    @transaction.atomic
+    def delete_task_by_id(task_id: int) -> int:
+        task = Task.objects.get(id=task_id)  # raises Task.DoesNotExist if missing
+
+        deleted_rank = task.rank
+        task.delete()
+
+        tasks_to_decrement = Task.objects.filter(rank__gt=deleted_rank)
         for task in tasks_to_decrement:
             task.rank -= 1
 

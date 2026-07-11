@@ -55,10 +55,10 @@ export function TaskList({ tasks, onChanged }: TaskListProps) {
     });
   };
 
-  const handleDelete = async (rank: number) => {
+  const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this task?")) return;
     try {
-      await deleteTask(rank);
+      await deleteTask(id);
       onChanged();
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
@@ -67,7 +67,7 @@ export function TaskList({ tasks, onChanged }: TaskListProps) {
 
   const handleSaveOrder = async () => {
     try {
-      await updateOrder(items.map((t) => t.rank));
+      await updateOrder(items.map((t) => t.id));
       onChanged();
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));

@@ -16,10 +16,11 @@ class UpdateOrder(APIView):
         except ValidationError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         
-        if Task.objects.count() != len(request_body.new_order):
-            return Response("Proposed order has unexpected length.", status=status.HTTP_400_BAD_REQUEST)
+        existing_ids = set(Task.objects.values_list("id", flat=True))
+        if existing_ids != set(request_body.task_ids):
+            return Response("Proposed order does not match current tasks.", status=status.HTTP_400_BAD_REQUEST)
 
-        tasks_updated = TaskLogic.update_order_to(request_body.new_order)
+        tasks_updated = TaskLogic.update_order_to(request_body.task_ids)
 
         return Response(f"{tasks_updated} task ranks updated.", status.HTTP_200_OK)
 
