@@ -187,4 +187,3 @@ Run
 docker compose exec api python manage.py import_csv google_export_example.csv
 ```
 
-Here, `<path_to_csv>` is the path relative to your _inner_ `home_base` folder.
