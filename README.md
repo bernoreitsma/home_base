@@ -56,6 +56,17 @@ For further usage, see https://docs.docker.com/compose/.
 
 # Contribution guide
 
+## Git hooks
+Install devtools; run
+```
+pip install -r requirements-dev.txt
+```
+Then install the pre-commit hooks, run
+```
+pre-commit install
+```
+This takes care of linting, formatting, type-checking etc before you commit.
+
 ## Model migrations
 
 If you change or add models, add migrations like so:
