@@ -172,7 +172,8 @@ Then reload http://localhost:8000/tasks.
 
 ## Tasks
 
-Open http://localhost:8000/tasks for the local task list page.
+Open http://localhost:8000/tasks for the local task list page. Visit
+http://localhost:8000/tasks/dashboard for the dashboard.
 
 ### Importing data
 
