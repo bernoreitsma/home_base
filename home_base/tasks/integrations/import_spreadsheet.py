@@ -23,7 +23,7 @@ class CSVImporter:
         raw_tasks = self._clean_rows(raw_tasks)
         tasks: list[Task] = []
         for raw_task in raw_tasks.iterrows():
-            assert type(raw_task is tuple[int, pd.Series])
+            assert type(raw_task) is tuple[int, pd.Series]
             tasks.append(self._unpack_raw_task_row(raw_task))
         return tasks
 
