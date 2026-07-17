@@ -1,3 +1,4 @@
+from django.db import transaction
 from pydantic import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
@@ -23,15 +24,15 @@ class TaskAPIView(APIView):
             request_body = CreateTaskBody(**request_data)
         except ValidationError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+        with transaction.atomic():
+            task = Task(
+                rank=Task.objects.select_for_update().count(),
+                description=request_body.description,
+                status=Task.TaskStatus.TODO,
+                category=request_body.category,
+            )
 
-        task = Task(
-            rank=Task.objects.count(),
-            description=request_body.description,
-            status=Task.TaskStatus.TODO,
-            category=request_body.category,
-        )
-
-        task.save()
+            task.save()
 
         return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
 
