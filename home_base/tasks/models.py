@@ -10,8 +10,8 @@ class Task(models.Model):
     class TaskCategory(models.TextChoices):
         IMPORTANT = "IMPORTANT"
         FUN = "FUN"
-        SMALL = "SMALL"
         URGENT = "URGENT"
+        SMALL = "SMALL"
 
     rank = models.IntegerField()
     description = models.CharField(max_length=1000)
