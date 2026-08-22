@@ -65,8 +65,10 @@ export function TaskList({ tasks, onChanged }: TaskListProps) {
     }
   };
 
-  const handleSaveOrder = async () => {
+  const handleDragEnd = async () => {
     try {
+      console.log("dragend");
+      setDraggedRank(null);
       await updateOrder(items.map((t) => t.id));
       onChanged();
     } catch (err) {
@@ -76,12 +78,6 @@ export function TaskList({ tasks, onChanged }: TaskListProps) {
 
   return (
     <div className="task-list">
-      <div className="buttons">
-        <button className="button save" type="button" onClick={handleSaveOrder}>
-          {" "}
-          Save Order
-        </button>
-      </div>
       <ul id="task-list" onDragOver={handleDragOver}>
         {items.map((task) => (
           <TaskItem
@@ -89,7 +85,7 @@ export function TaskList({ tasks, onChanged }: TaskListProps) {
             task={task}
             isDragging={task.rank === draggedRank}
             onDragStart={setDraggedRank}
-            onDragEnd={() => setDraggedRank(null)}
+            onDragEnd={handleDragEnd}
             onDelete={handleDelete}
           />
         ))}
